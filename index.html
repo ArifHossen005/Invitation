@@ -607,10 +607,16 @@ const App = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { event, bride, groom } = DATA;
 
-  const openCard = () => {
-    const el = document.getElementById('inside');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
+  const [opened, setOpened] = React.useState(false);
+  const openCard = () => setOpened(true);
+  React.useEffect(() => {
+    if (!opened) return;
+    const t = setTimeout(() => {
+      const el = document.getElementById('inside');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 60);
+    return () => clearTimeout(t);
+  }, [opened]);
 
   const addToCalendar = () => {
     const ics = [
@@ -650,6 +656,7 @@ const App = () => {
       <Petals />
       <Cover onOpen={openCard} />
 
+      {opened && (
       <main id="inside">
         <Reveal><h2 className="sec-title">আপনাদের সাদর আমন্ত্রণ</h2></Reveal>
         <div className="book">
@@ -676,6 +683,7 @@ const App = () => {
           </Reveal>
         </section>
       </main>
+      )}
     </>
   );
 };
